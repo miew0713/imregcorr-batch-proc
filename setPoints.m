@@ -1,4 +1,4 @@
-function gtruth= setPoints(filename,para)
+function gtruth= setPoints(filename, para)
     % 顯示圖片
     if isa(filename,'uint8')
         img= filename;
@@ -6,6 +6,10 @@ function gtruth= setPoints(filename,para)
         img= uint8(filename);
     else
         img= imread(filename);        
+    end
+    
+    if ~exist('para','var')
+        para= '';
     end
     
     fig= figure;
@@ -42,7 +46,7 @@ function gtruth= setPoints(filename,para)
     vec= vec./norm(vec);
     
     % 顯示結果
-    title('標記完成，2秒後關閉視窗');
+    title('標記完成');
     dirLine= [ topCenter;
                topCenter+vec*mSize*5 ];
     plot(pt0(:,1), pt0(:,2), 'r-', 'linewidth', mSize/6);
@@ -53,7 +57,7 @@ function gtruth= setPoints(filename,para)
     pt= [pt; pt];
     pt= pt(dir:(dir+3),:);
     
-    if nargin>1
+    if ~isempty(regexp(para,'-batch','once'))
         gtruth.img= img;
     end
     gtruth.corner= pt;
@@ -62,5 +66,6 @@ function gtruth= setPoints(filename,para)
     % 關閉視窗
     pause(1.5);
     close(fig);
+
 end
 

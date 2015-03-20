@@ -1,4 +1,4 @@
-function out= batchSetPoints(folder_name, dataset_name)
+function Dataset= batchSetPoints(folder_name, dataset_name)
     if ~exist('folder_name','var')
         folder_name= cd;
     end
@@ -33,7 +33,7 @@ function out= batchSetPoints(folder_name, dataset_name)
         end
         
         img= imread([folder_name,name]);
-        res= setPoints(img);
+        res= setPoints(img,'-batch');
         
         Dataset{Index}.name= name;
         Dataset{Index}.img= img;
@@ -44,6 +44,7 @@ function out= batchSetPoints(folder_name, dataset_name)
     end
     
     % 存擋
+    Dataset= cell2mat(Dataset);
     if Index==1
         warning('該路徑沒有找到圖片');
     else
@@ -51,5 +52,4 @@ function out= batchSetPoints(folder_name, dataset_name)
         save(dataset_name, 'Dataset');
     end
     
-    out= cell2mat(Dataset);
 end
