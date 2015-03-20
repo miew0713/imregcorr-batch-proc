@@ -1,4 +1,4 @@
-function batchSetPoints(folder_name, dataset_name)
+function out= batchSetPoints(folder_name, dataset_name)
     if ~exist('folder_name','var')
         folder_name= cd;
     end
@@ -32,7 +32,14 @@ function batchSetPoints(folder_name, dataset_name)
             continue;
         end
         
-        Dataset{Index}= setPoints([folder_name,name]);
+        img= imread([folder_name,name]);
+        res= setPoints(img);
+        
+        Dataset{Index}.name= name;
+        Dataset{Index}.img= img;
+        Dataset{Index}.corner= res.corner;
+        Dataset{Index}.up= res.up;
+        
         Index= Index+1;
     end
     
@@ -43,4 +50,6 @@ function batchSetPoints(folder_name, dataset_name)
         fprintf('標記了%d張圖片\n',Index-1);
         save(dataset_name, 'Dataset');
     end
+    
+    out= cell2mat(Dataset);
 end

@@ -1,4 +1,4 @@
-function gtruth= setPoints(filename)
+function gtruth= setPoints(filename,para)
     % 顯示圖片
     if isa(filename,'uint8')
         img= filename;
@@ -53,7 +53,9 @@ function gtruth= setPoints(filename)
     pt= [pt; pt];
     pt= pt(dir:(dir+3),:);
     
-    gtruth.img= img;
+    if nargin>1
+        gtruth.img= img;
+    end
     gtruth.corner= pt;
     gtruth.up= vec;
     
