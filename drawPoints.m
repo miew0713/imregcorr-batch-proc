@@ -1,4 +1,9 @@
-function drawPoints(gtruth)
+function drawPoints(gtruth, img)
+    if isfield(gtruth,'transPts') && isfield(gtruth,'transUp') && exist('img','var')
+        gtruth.img= img;
+        gtruth.corner= gtruth.transPts;
+        gtruth.up= gtruth.transUp;
+    end
     if ~isfield(gtruth,'img') || ~isfield(gtruth,'corner') || ~isfield(gtruth,'up')
         error('輸入結構不正確');
     end

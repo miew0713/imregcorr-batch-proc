@@ -22,7 +22,7 @@ function gtruth= setPoints(filename, para)
     % 點擊設定資訊
     while(1)
         % 四角
-        title('依序設定四角位置');
+        title('依順時針設定四角位置');
         pt= ginput(4);
         plot_pt= plot(pt(:,1), pt(:,2), 'r.', 'markersize', mSize);
         

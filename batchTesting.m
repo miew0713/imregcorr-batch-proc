@@ -17,32 +17,20 @@ function [res, rate]= batchTesting(Dataset, para)
         % 僅對單一張圖片比對
         for i= 1:length(Dataset)
             if i==para, continue; end
-            [Suc, Err]= testing(para, i);
-            
-            res{index}.fix= Dataset(para).name;
-            res{index}.mov= Dataset(i).name;
-            res{index}.success= Suc;
-            res{index}.error= Err;
-            
+            res{index}= saveResult(para, i);
             numTesting= numTesting+1;
+            if res{index}.success, numSuccess= numSuccess+1; end
             index= index+1;
-            if Suc, numSuccess= numSuccess+1; end
         end
     else
         % 資料庫交互比對
         for i= 1:length(Dataset)
             for j= 1:length(Dataset)
                 if j==i, continue; end
-                [Suc, Err]= testing(i, j);
-                
-                res{index}.fix= Dataset(i).name;
-                res{index}.mov= Dataset(j).name;
-                res{index}.success= Suc;
-                res{index}.error= Err;
-
+                res{index}= saveResult(i, j);
                 numTesting= numTesting+1;
+                if res{index}.success, numSuccess= numSuccess+1; end
                 index= index+1;
-                if Suc, numSuccess= numSuccess+1; end
             end
         end
     end
@@ -53,7 +41,7 @@ function [res, rate]= batchTesting(Dataset, para)
     fprintf('準確率%.1f%%\n',rate);
     
     %% ------------------------------
-    function [Suc, Err]= testing(patIdx, sampleIdx)
+    function [Suc, Err, transPoints]= testing(patIdx, sampleIdx)
         %-取得對應後的座標點位置-----------
         info= imgRegistration(Dataset(patIdx).img, Dataset(sampleIdx).img);
         transPoints= transformPointsForward(info.tform, Dataset(sampleIdx).corner);
@@ -62,5 +50,15 @@ function [res, rate]= batchTesting(Dataset, para)
         Err= norm(transPoints-Dataset(patIdx).corner);
         Suc= Err < err_threshold;
         
+    end
+
+    %% ------------------------------
+    function R= saveResult(patIdx, sampleIdx)
+        R.fix= Dataset(patIdx).name;
+        R.mov= Dataset(sampleIdx).name;
+        [R.success, R.errVal, R.transPts]= testing(patIdx, sampleIdx);
+        
+        vec= mean(R.transPts(1:2,:)) - mean(R.transPts);
+        R.transUp= vec ./ norm(vec);
     end
 end
